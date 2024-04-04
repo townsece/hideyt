@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "version": "0.1",
+  "name": "hideyt",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://youtube.com/*",
+        "*://*.youtube.com/*"
+      ],
+      "js": ["hideyt.js"]
+    }
+  ]
+}
