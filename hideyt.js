@@ -1,7 +1,11 @@
 let thumbnailPath = "#contents #content"
 let containerPath = "#contents ytd-rich-item-renderer"
+let shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/.."
 
 browser.runtime.onMessage.addListener((request) => {
+    // wipe out the shorts rail entirely
+    document.evaluate(shortsXPath, document).iterateNext().remove()
+    // remove all videos with the progress bar inlaid
     document.body.querySelectorAll(thumbnailPath).forEach(el => {
         if (el.querySelectorAll(".ytd-thumbnail-overlay-resume-playback-renderer").length > 0) {
             el.remove()
@@ -10,7 +14,7 @@ browser.runtime.onMessage.addListener((request) => {
     let boxes = document.body.querySelectorAll(containerPath)
     let rawVideos = document.body.querySelectorAll(thumbnailPath)
     let videos = []
-    // Remove non-videos like the shorts rail and header
+    // ignore non-videos like the shorts rail and header
     rawVideos.forEach(el => {
         if (el.checkVisibility() && el.querySelectorAll("div#details").length > 0 && el.querySelectorAll("#menu-container").length === 0) {
             videos.push(el)
@@ -31,6 +35,5 @@ browser.runtime.onMessage.addListener((request) => {
             boxes[i].insertAdjacentElement("afterbegin", videos[i])
         }
     }
-    // TODO - stop using the shorts containers
     return Promise.resolve({ response: "success" });
 });
