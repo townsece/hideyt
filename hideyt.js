@@ -4,8 +4,9 @@ let shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .
 
 browser.runtime.onMessage.addListener((request) => {
     // wipe out the shorts rail entirely
+    // TODO - resolve issue with disappearing videos and reappearing shorts rail on scroll-to-load-more
     document.evaluate(shortsXPath, document).iterateNext().remove()
-    // remove all videos with the progress bar inlaid
+    // remove all videos which have the progress bar inlaid
     document.body.querySelectorAll(thumbnailPath).forEach(el => {
         if (el.querySelectorAll(".ytd-thumbnail-overlay-resume-playback-renderer").length > 0) {
             el.remove()
