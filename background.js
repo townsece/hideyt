@@ -3,6 +3,8 @@ browser.browserAction.onClicked.addListener(
         console.log("Removing watched from tab")
         browser.tabs.sendMessage(
             tab.id,
-            { request: "Init remove" }
-        )
+            {request: "Init remove"}
+        ).then((response) => {
+            console.log("Got: " + response.response);
+        }).catch(() => console.warn("Extension not running or not on Youtube tab"));
     });
