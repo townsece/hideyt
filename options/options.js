@@ -6,4 +6,14 @@ function saveOptions() {
     });
 }
 
+function retrieveOptions(optionsFromStorage) {
+    document.querySelector("#upcoming").checked = optionsFromStorage.hideUpcoming
+}
+
+function handleError(e) {
+    console.error(e)
+}
+
+browser.storage.local.get().then(retrieveOptions, handleError)
+
 document.querySelector("form").addEventListener("submit", saveOptions)
