@@ -13,7 +13,7 @@ browser.runtime.onMessage.addListener((request) => {
     }
 
     let selectorsToRemove = [resumeOverlayPath]
-    if (request.remove_upcoming === true) {
+    if (request.hideUpcoming === true) {
         selectorsToRemove.push(upcomingOverlayPath)
     }
     // remove all videos which have the progress bar inlaid
