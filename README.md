@@ -12,3 +12,6 @@ your browser. The file you should select is the manifest.json.
 
 Once installed, the extension should show up in your toolbar. Just click the icon while a YouTube tab is loaded to apply
 the watched filter. To remove the filter, refresh the page.
+
+The extension has some options for fine-tuning what is hidden; to access these options you can navigate
+to `about:addons` and toggle the options in the `Preferences` tab.
