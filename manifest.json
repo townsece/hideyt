@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "version": "0.1",
+  "version": "0.4",
   "name": "hideyt",
   "content_scripts": [
     {
@@ -15,6 +15,10 @@
     "scripts": ["background.js"],
     "persistent": false
   },
+  "options_ui": {
+    "page": "options/options.html"
+  },
+  "permissions": ["storage"],
   "browser_action": {
     "default_icon": {
       "16": "icons/toolbar16.png",

@@ -1,15 +1,24 @@
 let thumbnailPath = "#contents #content"
 let containerPath = "#contents ytd-rich-item-renderer"
+let resumeOverlayPath = ".ytd-thumbnail-overlay-resume-playback-renderer"
+let upcomingOverlayPath = "#time-status [aria-label=\"Upcoming\"]"
 let shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/.."
 
 browser.runtime.onMessage.addListener((request) => {
-    // wipe out the shorts rail entirely
-    // TODO - resolve issue with disappearing videos and reappearing shorts rail on scroll-to-load-more
-    document.evaluate(shortsXPath, document).iterateNext().remove()
+    // wipe out the shorts rail entirely if exists
+    document.evaluate(shortsXPath, document).iterateNext()?.remove()
+
+    let selectorsToRemove = [resumeOverlayPath]
+    if (request.hideUpcoming === true) {
+        selectorsToRemove.push(upcomingOverlayPath)
+    }
     // remove all videos which have the progress bar inlaid
     document.body.querySelectorAll(thumbnailPath).forEach(el => {
-        if (el.querySelectorAll(".ytd-thumbnail-overlay-resume-playback-renderer").length > 0) {
-            el.remove()
+        for (let path of selectorsToRemove) {
+            if (el.querySelectorAll(path).length > 0) {
+                el.remove()
+                break
+            }
         }
     })
     let boxes = document.body.querySelectorAll(containerPath)
@@ -25,7 +34,7 @@ browser.runtime.onMessage.addListener((request) => {
     for (let i = 0; i < videos.length; i++) {
         if (!hitRemoved) {
             // Once we hit the first empty container, we are just backfilling, regardless of existing videos
-            hitRemoved = boxes[i].querySelectorAll("#content").length === 0;
+            hitRemoved = boxes[i].querySelectorAll("#content").length === 0
         }
         if (hitRemoved) {
             console.log("hit removed at index " + i)
@@ -36,5 +45,5 @@ browser.runtime.onMessage.addListener((request) => {
             boxes[i].insertAdjacentElement("afterbegin", videos[i])
         }
     }
-    return Promise.resolve({ response: "success" });
-});
+    return Promise.resolve({response: "success"})
+})
