@@ -5,12 +5,8 @@ let upcomingOverlayPath = "#time-status [aria-label=\"Upcoming\"]"
 let shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/.."
 
 browser.runtime.onMessage.addListener((request) => {
-    // wipe out the shorts rail entirely
-    try {
-        document.evaluate(shortsXPath, document).iterateNext().remove()
-    } catch (error) {
-        console.log("Didn't find Shorts reel, continuing as normal")
-    }
+    // wipe out the shorts rail entirely if exists
+    document.evaluate(shortsXPath, document).iterateNext()?.remove()
 
     let selectorsToRemove = [resumeOverlayPath]
     if (request.hideUpcoming === true) {
@@ -49,5 +45,5 @@ browser.runtime.onMessage.addListener((request) => {
             boxes[i].insertAdjacentElement("afterbegin", videos[i])
         }
     }
-    return Promise.resolve({ response: "success" })
+    return Promise.resolve({response: "success"})
 })
