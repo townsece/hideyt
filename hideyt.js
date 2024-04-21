@@ -38,7 +38,7 @@ browser.runtime.onMessage.addListener((request) => {
     for (let i = 0; i < videos.length; i++) {
         if (!hitRemoved) {
             // Once we hit the first empty container, we are just backfilling, regardless of existing videos
-            hitRemoved = boxes[i].querySelectorAll("#content").length === 0;
+            hitRemoved = boxes[i].querySelectorAll("#content").length === 0
         }
         if (hitRemoved) {
             console.log("hit removed at index " + i)
@@ -49,5 +49,5 @@ browser.runtime.onMessage.addListener((request) => {
             boxes[i].insertAdjacentElement("afterbegin", videos[i])
         }
     }
-    return Promise.resolve({ response: "success" });
-});
+    return Promise.resolve({ response: "success" })
+})
