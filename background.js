@@ -1,5 +1,5 @@
-let fallbackSettings = {hideUpcoming: false}
-let settings = {}
+let fallbackSettings = { hideUpcoming: false };
+let settings = {};
 
 browser.browserAction.onClicked.addListener(
     (tab) => {
@@ -10,25 +10,26 @@ browser.browserAction.onClicked.addListener(
 
 async function setSettings(storedSettings) {
     if (storedSettings !== null) {
-        settings = storedSettings
-        return Promise.resolve({gotSettings: true})
+        settings = storedSettings;
+        return Promise.resolve({ gotSettings: true });
+    } else {
+        return Promise.resolve({ gotSettings: false });
     }
-    return Promise.resolve({gotSettings: false})
 }
 
 function removeWatched(tab, result) {
-    console.log("Retrieving stored settings")
-    let requestSettings
+    console.log("Retrieving stored settings");
+    let requestSettings;
     if (result.gotSettings) {
         if (settings === undefined) {
-            console.warn("Expected settings but got undefined, using fallback")
-            requestSettings = fallbackSettings
+            console.warn("Expected settings but got undefined, using fallback");
+            requestSettings = fallbackSettings;
         } else {
-            requestSettings = settings
+            requestSettings = settings;
         }
     } else {
-        console.log("No settings found in local storage; using defaults")
-        requestSettings = fallbackSettings
+        console.log("No settings found in local storage; using defaults");
+        requestSettings = fallbackSettings;
     }
 
     console.log("Notifying content script to remove watched from tab")
@@ -36,12 +37,14 @@ function removeWatched(tab, result) {
         tab.id,
         requestSettings
     ).then((response) => {
-        console.log("Got: " + response.response)
+        console.log("Got: " + response.response);
     }).catch(() => console.warn("Extension not running or not on Youtube tab"))
 
 }
 
 async function handleError(e) {
-    console.error(e)
-    return Promise.resolve({gotSettings: false})
+    console.error(e);
+    return Promise.resolve({ gotSettings: false });
 }
+
+// TODO - disable infinite scroll after removal - or handle pop-in
