@@ -1,15 +1,16 @@
-let thumbnailPath = "#contents #content"
-let containerPath = "#contents ytd-rich-item-renderer"
-let resumeOverlayPath = ".ytd-thumbnail-overlay-resume-playback-renderer"
-let upcomingOverlayPath = "#time-status [aria-label=\"Upcoming\"]"
-let shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/.."
+const thumbnailPath = "#contents ytd-rich-item-renderer #content"
+const containerPath = "#contents ytd-rich-item-renderer"
+const resumeOverlayPath = ".ytd-thumbnail-overlay-resume-playback-renderer"
+const resumeOverlayPath_new = ".ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment"
+const upcomingOverlayPath = "#time-status [aria-label=\"Upcoming\"]"
+const shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/.."
 
 browser.runtime.onMessage.addListener((request) => {
     // wipe out the shorts rail entirely if exists
     document.evaluate(shortsXPath, document).iterateNext()?.remove()
 
-    let selectorsToRemove = [resumeOverlayPath]
-    if (request.hideUpcoming === true) {
+    let selectorsToRemove = [resumeOverlayPath, resumeOverlayPath_new]
+    if (request.hideUpcoming) {
         selectorsToRemove.push(upcomingOverlayPath)
     }
     // remove all videos which have the progress bar inlaid
