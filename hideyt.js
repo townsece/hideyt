@@ -93,4 +93,4 @@ browser.runtime.onMessage.addListener((request) => {
         orchestrateRemoveWatched(request);
     }
     return Promise.resolve({ response: "success" });
-})
+});
