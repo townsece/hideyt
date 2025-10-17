@@ -5,7 +5,7 @@ const resumeOverlayPath_new = ".ytThumbnailOverlayProgressBarHostWatchedProgress
 const upcomingOverlayPath = "#time-status [aria-label=\"Upcoming\"]";
 const shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/..";
 
-const gridBox = "ytd-rich-grid-renderer";
+const gridBoxPath = "ytd-rich-grid-renderer";
 
 function orchestrateRemoveWatched(request) {
 
@@ -17,53 +17,69 @@ function orchestrateRemoveWatched(request) {
         selectorsToRemove.push(upcomingOverlayPath);
     }
 
-    let removed = [];
-    // remove all videos which have the progress bar inlaid
-    document.body.querySelectorAll(thumbnailPath).forEach(el => {
-        for (let path of selectorsToRemove) {
-            if (el.querySelectorAll(path).length > 0) {
-                el.remove();
-                removed.push(el);
-                break;
+    // get all visible containers
+    let allContainers = Array.from(document.body.querySelectorAll(containerPath));
+    let visibleContainers = allContainers.filter(box => {
+        // filter for visible and part of active page
+        return box.checkVisibility() && box.offsetParent !== null;
+    });
+
+    // Remove watched videos and collect remaining ones
+    let remainingVideos = [];
+    visibleContainers.forEach(container => {
+        let video = container.querySelector("#content");
+        if (video) {
+            let shouldRemove = false;
+            for (let path of selectorsToRemove) {
+                if (video.querySelectorAll(path).length > 0) {
+                    shouldRemove = true;
+                    break;
+                }
             }
-        }
-    })
-    let boxes = document.body.querySelectorAll(containerPath);
-    let rawVideos = document.body.querySelectorAll(thumbnailPath);
-    let videos = [];
-    // filter out non-videos like the shorts rail and header
-    rawVideos.forEach(el => {
-        if (el.checkVisibility() && el.querySelectorAll("#menu-container").length === 0) {
-            videos.push(el);
+            
+            if (!shouldRemove) {
+                // filter out non-videos like the shorts rail and header
+                if (video.querySelectorAll("#menu-container").length === 0) {
+                    remainingVideos.push(video);
+                }
+            }
         }
     });
 
     if (request.applyCustomColumns) {
         console.log(`setting columns to ${request.requestedColumns}`);
         let requestedColumnsString = String(request.requestedColumns);
-        let flexStyle = document.querySelector(gridBox).getAttribute("style");
-        flexStyle = flexStyle.replaceAll(/([a-zA-Z0-9\-]+): \d;/gi, `$1: ${requestedColumnsString};`);
-        document.querySelector(gridBox).setAttribute("style", flexStyle);
-        for (let i = 0; i < videos.length; i++) {
-            // Remove the existing video from the dom and insert our own (which could be the same video)
-            boxes[i].setAttribute("items-per-row", requestedColumnsString);
-            if (boxes[i].querySelectorAll("#content").length > 0) {
-                boxes[i].querySelector("#content").remove();
+        let gridBox = document.querySelector(gridBoxPath);
+        if (gridBox) {
+            let flexStyle = gridBox.getAttribute("style");
+            flexStyle = flexStyle.replaceAll(/([a-zA-Z0-9\-]+): \d;/gi, `$1: ${requestedColumnsString};`);
+            gridBox.setAttribute("style", flexStyle);
+        }
+        
+        visibleContainers.forEach((box, i) => {
+            box.setAttribute("items-per-row", requestedColumnsString);
+            // clear existing vid
+            let existingContent = box.querySelector("#content");
+            if (existingContent) {
+                existingContent.remove();
             }
-            boxes[i].insertAdjacentElement("afterbegin", videos[i]);
-        }
-        for (let i = videos.length; i < boxes.length; i++) {
-            // Set for remaining boxes
-            boxes[i].setAttribute("items-per-row", requestedColumnsString);
-        }
+            // Add new video if we have one
+            if (i < remainingVideos.length) {
+                box.insertAdjacentElement("afterbegin", remainingVideos[i]);
+            }
+        });
     } else {
-        for (let i = 0; i < videos.length; i++) {
-            // Remove the existing video from the dom and insert our own (which could be the same video)
-            if (boxes[i].querySelectorAll("#content").length > 0) {
-                boxes[i].querySelector("#content").remove();
+        visibleContainers.forEach((box, i) => {
+            // Clear existing content
+            let existingContent = box.querySelector("#content");
+            if (existingContent) {
+                existingContent.remove();
             }
-            boxes[i].insertAdjacentElement("afterbegin", videos[i]);
-        }
+            // Add new video if we have one
+            if (i < remainingVideos.length) {
+                box.insertAdjacentElement("afterbegin", remainingVideos[i]);
+            }
+        });
     }
 }
 
