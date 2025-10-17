@@ -1,0 +1,113 @@
+/* Light mode (default) */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --input-bg: #f5f5f5;
+    --input-border: #cccccc;
+    --button-bg: #007bff;
+    --button-hover: #0056b3;
+    --button-text: #ffffff;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1e1e1e;
+        --text-color: #e0e0e0;
+        --input-bg: #2d2d2d;
+        --input-border: #444444;
+        --button-bg: #0d6efd;
+        --button-hover: #0a58ca;
+        --button-text: #ffffff;
+    }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 20px;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+label {
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--button-bg);
+}
+
+input[type="number"] {
+    width: 60px;
+    padding: 6px 8px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 0 8px;
+}
+
+input[type="number"]:focus {
+    outline: 2px solid var(--button-bg);
+    outline-offset: 1px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+button:hover {
+    background-color: var(--button-hover);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button.saving {
+    background-color: #6c757d;
+    cursor: wait;
+}
+
+button.saved {
+    background-color: #28a745;
+}
+
+button.saved::after {
+    content: " ✓";
+}
+
+br {
+    display: none;
+}

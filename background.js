@@ -1,5 +1,7 @@
-let fallbackSettings = { hideUpcoming: false };
+let fallbackSettings = { hideUpcoming: false, requestedColumns: 3, applyCustomColumns: false };
 let settings = {};
+
+// TODO - add option to auto-fire on load
 
 browser.browserAction.onClicked.addListener(
     (tab) => {

@@ -1,16 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>hideyt options</title>
+    <link rel="stylesheet" href="options.css" />
 </head>
+
 <body>
     <form>
-        <label for="upcoming">Hide Upcoming</label>
-        <input type="checkbox" id="upcoming" />
+        <!-- TODO - is there a better toggle type for this -->
+        <div class="row">
+            <label for="upcoming">Hide Upcoming</label>
+            <input type="checkbox" id="upcoming" />
+        </div>
+        <div class="row">
+            <label for="thumbnail-row-width">Video columns per row</label>
+            <input type="number" id="thumbnail-row-width" name="vol" min="1" max="6" value="3" />
+            <label for="apply-row-width">Apply custom columns</label>
+            <input type="checkbox" id="apply-row-width" />
+        </div>
+        <br />
         <button type="submit">Save</button>
     </form>
     <script src="options.js"></script>
 
 </body>
+
 </html>
