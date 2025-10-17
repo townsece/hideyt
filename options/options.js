@@ -1,4 +1,14 @@
-function saveOptions() {
+const form = document.querySelector("form")
+const button = form.querySelector('button[type="submit"]')
+
+function saveOptions(e) {
+    e.preventDefault()
+
+    // UI feedback on press
+    button.textContent = 'Saving...'
+    button.classList.add('saving')
+    button.disabled = true
+
     let hideUpcoming = document.querySelector("#upcoming").checked
     console.log("Got hide upcoming as: " + hideUpcoming)
     let requestedColumns = document.querySelector("#thumbnail-row-width").value
@@ -10,6 +20,18 @@ function saveOptions() {
         requestedColumns,
         applyCustomColumns
     });
+
+    // UI confirm
+    button.classList.remove('saving')
+    button.classList.add('saved')
+    button.textContent = 'Saved'
+    
+    // Reset button after 2 seconds
+    setTimeout(() => {
+        button.classList.remove('saved')
+        button.textContent = 'Save'
+        button.disabled = false
+    }, 2000);
 }
 
 function retrieveOptions(optionsFromStorage) {
@@ -24,4 +46,4 @@ function handleError(e) {
 
 browser.storage.local.get().then(retrieveOptions, handleError)
 
-document.querySelector("form").addEventListener("submit", saveOptions)
+form.addEventListener("submit", async (e) => saveOptions(e))
