@@ -20,7 +20,6 @@ function orchestrateRemoveWatched(request) {
     // get all visible containers
     let allContainers = Array.from(document.body.querySelectorAll(containerPath));
     let visibleContainers = allContainers.filter(box => {
-        // filter for visible and part of active page
         return box.checkVisibility() && box.offsetParent !== null;
     });
 
@@ -70,7 +69,7 @@ function orchestrateRemoveWatched(request) {
         });
     } else {
         visibleContainers.forEach((box, i) => {
-            // Clear existing content
+            // clear existing vid
             let existingContent = box.querySelector("#content");
             if (existingContent) {
                 existingContent.remove();
