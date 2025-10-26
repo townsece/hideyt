@@ -2,7 +2,7 @@ const thumbnailPath = "#contents ytd-rich-item-renderer #content";
 const containerPath = "#contents ytd-rich-item-renderer";
 const resumeOverlayPath = ".ytd-thumbnail-overlay-resume-playback-renderer";
 const resumeOverlayPath_new = ".ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment";
-const upcomingOverlayPath = "#time-status [aria-label=\"Upcoming\"]";
+const upcomingOverlayPath = "//div[text()='Upcoming']";
 const shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/..";
 
 const gridBoxPath = "ytd-rich-grid-renderer";
