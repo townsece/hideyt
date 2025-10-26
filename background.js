@@ -1,4 +1,4 @@
-let fallbackSettings = { hideUpcoming: false, requestedColumns: 3, applyCustomColumns: false };
+let fallbackSettings = { hideUpcoming: false, requestedColumns: 3, applyCustomColumns: false, autoFire: false };
 let settings = {};
 
 // TODO - add option to auto-fire on load

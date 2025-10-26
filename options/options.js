@@ -14,11 +14,14 @@ function saveOptions(e) {
     let requestedColumns = document.querySelector("#thumbnail-row-width").value;
     let applyCustomColumns = document.querySelector("#apply-row-width").checked;
     console.log("Got custom columns as: " + requestedColumns);
-    console.log(`${applyCustomColumns ?? "not "}applying custom columns`);
+    console.log(`${applyCustomColumns ? "" : "not "}applying custom columns`);
+    let autoFire = document.querySelector("#enable-auto-fire").checked;
+    console.log(`${autoFire ? "" : "not "}auto-firing extension`);
     browser.storage.local.set({
         hideUpcoming,
         requestedColumns,
-        applyCustomColumns
+        applyCustomColumns,
+        autoFire
     });
 
     // UI confirm
@@ -38,6 +41,7 @@ function retrieveOptions(optionsFromStorage) {
     document.querySelector("#upcoming").checked = optionsFromStorage.hideUpcoming;
     document.querySelector("#thumbnail-row-width").value = optionsFromStorage.requestedColumns;
     document.querySelector("#apply-row-width").checked = optionsFromStorage.applyCustomColumns;
+    document.querySelector("#enable-auto-fire").checked = optionsFromStorage.autoFire;
 }
 
 function handleError(e) {
