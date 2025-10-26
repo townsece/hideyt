@@ -82,14 +82,31 @@ function orchestrateRemoveWatched(request) {
     }
 }
 
-browser.runtime.onMessage.addListener((request) => {
-    // Ensure everything has finished loading before firing
-    if (document.readyState === 'loading' || document.readyState === 'interactive') {
-        document.addEventListener("DOMContentLoaded", () => {
-            orchestrateRemoveWatched(request);
-        })
-    } else {
-        orchestrateRemoveWatched(request);
+browser.runtime.onMessage.addListener(async (request) => {
+    function videosInDOM() {
+        return new Promise((resolve) => {
+            if (document.querySelectorAll(thumbnailPath).length > 0) {
+                resolve();
+                return;
+            }
+
+            const observer = new MutationObserver(() => {
+                if (document.querySelectorAll(thumbnailPath).length > 0) {
+                    observer.disconnect();
+                    resolve();
+                }
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            setTimeout(() => {
+                observer.disconnect();
+                resolve();
+            }, 20000);
+        });
     }
+    // Ensure videos have finished loading before firing
+    await videosInDOM();
+    orchestrateRemoveWatched(request);
     return Promise.resolve({ response: "success" });
 });
