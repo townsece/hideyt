@@ -4,10 +4,18 @@ const resumeOverlayPath = ".ytd-thumbnail-overlay-resume-playback-renderer";
 const resumeOverlayPath_new = ".ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment";
 const upcomingOverlayPath = "//div[text()='Upcoming']";
 const shortsXPath = "//div[contains(@class, \"section\") and @id=\"content\" and .//*[contains(text(),\"Shorts\")]]/..";
+const pageContainerPath = "ytd-browse"
 
 const gridBoxPath = "ytd-rich-grid-renderer";
 
 function orchestrateRemoveWatched(request) {
+    console.log('hide//yt: hiding watched videos');
+
+    // check active page (//ytd-browse[@page-subtype=home|subscriptions] - not hidden, role=main)
+    let pages = Array.from(document.body.querySelectorAll(pageContainerPath));
+    let activePage = pages.filter(container => {
+        return container.checkVisibility();
+    })[0];
 
     // wipe out the shorts rail entirely if exists
     document.evaluate(shortsXPath, document).iterateNext()?.remove();
@@ -18,7 +26,7 @@ function orchestrateRemoveWatched(request) {
     }
 
     // get all visible containers
-    let allContainers = Array.from(document.body.querySelectorAll(containerPath));
+    let allContainers = Array.from(activePage.querySelectorAll(containerPath));
     let visibleContainers = allContainers.filter(box => {
         return box.checkVisibility() && box.offsetParent !== null;
     });
@@ -37,6 +45,8 @@ function orchestrateRemoveWatched(request) {
             }
             
             if (!shouldRemove) {
+                if (request.hideUpcoming && document.evaluate(upcomingOverlayPath, video, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null).length > 0) {
+                }
                 // filter out non-videos like the shorts rail and header
                 if (video.querySelectorAll("#menu-container").length === 0) {
                     remainingVideos.push(video);
@@ -48,7 +58,7 @@ function orchestrateRemoveWatched(request) {
     if (request.applyCustomColumns) {
         console.log(`setting columns to ${request.requestedColumns}`);
         let requestedColumnsString = String(request.requestedColumns);
-        let gridBox = document.querySelector(gridBoxPath);
+        let gridBox = activePage.querySelector(gridBoxPath);
         if (gridBox) {
             let flexStyle = gridBox.getAttribute("style");
             flexStyle = flexStyle.replaceAll(/([a-zA-Z0-9\-]+): \d;/gi, `$1: ${requestedColumnsString};`);
